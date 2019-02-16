@@ -136,7 +136,8 @@ export function getNockRequestHandlerFn(queryMock: QueryMock): NockHandleFn {
                   nockReturnVal =
                     returnValue instanceof Promise
                       ? await returnValue
-                      : returnValue;
+                      : // $FlowFixMe
+                        returnValue;
                 }
 
                 // Make sure we add the call to our list
@@ -144,6 +145,7 @@ export function getNockRequestHandlerFn(queryMock: QueryMock): NockHandleFn {
                   id: operationName,
                   variables,
                   headers: this.req.headers,
+                  // $FlowFixMe
                   response: nockReturnVal[1]
                 });
 
