@@ -6,4 +6,9 @@ export type ServerResponse = {
   data: Data
 };
 
-export type NockReturnValue = [number, ServerResponse];
+export type ServerErrorResponse = {
+  data?: Data;
+  errors: Array<Data>;
+};
+
+export type NockReturnValue = [number, ServerResponse | ServerErrorResponse];

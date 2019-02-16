@@ -9,8 +9,8 @@ describe('handleErrors', () => {
         const res = await fetchQuery({
           text: 'query { id }'
         });
-      } catch (error) {
-        expect(error.message).toMatchSnapshot();
+      } catch (errors) {
+        expect(errors[0].message).toMatchSnapshot();
         return;
       }
       throw new Error('No error was raised');
@@ -21,8 +21,8 @@ describe('handleErrors', () => {
         const res = await fetchQuery({
           text: 'query TestQuery { id }'
         });
-      } catch (error) {
-        expect(error.message).toMatchSnapshot();
+      } catch (errors) {
+        expect(errors[0].message).toMatchSnapshot();
         return;
       }
       throw new Error('No error was raised');
@@ -41,8 +41,8 @@ describe('handleErrors', () => {
         const res = await fetchQuery({
           text: 'query TestQuery { id }'
         });
-      } catch (error) {
-        expect(error.message).toMatchSnapshot();
+      } catch (errors) {
+        expect(errors[0].message).toMatchSnapshot();
         return;
       }
       throw new Error('No error was raised');
@@ -70,8 +70,8 @@ describe('handleErrors', () => {
         const res = await fetchQuery({
           text: 'query TestQuery { id }'
         });
-      } catch (error) {
-        expect(error.message).toMatchSnapshot();
+      } catch (errors) {
+        expect(errors[0].message).toMatchSnapshot();
         return;
       }
       throw new Error('No error was raised');
@@ -87,8 +87,8 @@ describe('handleErrors', () => {
         const res = await fetchQuery({
           text: 'query TestQuery2 { id }'
         });
-      } catch (error) {
-        expect(error.message).toMatchSnapshot();
+      } catch (errors) {
+        expect(errors[0].message).toMatchSnapshot();
         return;
       }
       throw new Error('No error was raised');
@@ -114,8 +114,8 @@ describe('handleErrors', () => {
         const res = await fetchQuery({
           text: 'query TestQuery3 { id }'
         });
-      } catch (error) {
-        expect(error.message).toMatchSnapshot();
+      } catch (errors) {
+        expect(errors[0].message).toMatchSnapshot();
         return;
       }
       throw new Error('No error was raised');
@@ -138,8 +138,8 @@ describe('handleErrors', () => {
         const res = await fetchQuery({
           text: 'query TestQuery1 { id }'
         });
-      } catch (error) {
-        expect(error.message).toMatchSnapshot();
+      } catch (errors) {
+        expect(errors[0].message).toMatchSnapshot();
         return;
       }
       throw new Error('No error was raised');

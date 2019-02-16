@@ -1,9 +1,9 @@
 // @flow
-import { fetchQuery, GRAPHQL_API_URL } from '../__testUtils__/fetchQuery';
+import { axiosQuery, GRAPHQL_API_URL } from '../__testUtils__/axiosQuery';
 import { queryMock } from '../__testUtils__/queryMock';
 import axios from 'axios';
 
-describe('queryMock', () => {
+describe('queryMock with axios', () => {
   describe('Basic queries', () => {
     it('should be able to mock basic queries', async () => {
       const testData = {
@@ -15,11 +15,11 @@ describe('queryMock', () => {
         data: testData
       });
 
-      const res = await fetchQuery({
-        text: 'query TestQuery { id }'
+      const res = await axios.post(GRAPHQL_API_URL, {
+        query: 'query TestQuery { id }'
       });
 
-      expect(res.data).toEqual(testData);
+      expect(res.data.data).toEqual(testData);
       expect(queryMock._calls.length).toBe(1);
     });
 
@@ -27,9 +27,8 @@ describe('queryMock', () => {
       expect.assertions(1);
 
       try {
-        await fetchQuery({
-          name: 'NoMockForThisOne',
-          text: 'query NoMockForThisOne { id }'
+        const res = await axiosQuery.post(GRAPHQL_API_URL, {
+          query: 'query NoMockForThisOne { id }'
         });
       } catch (e) {
         expect(e).toBeDefined();
@@ -68,22 +67,18 @@ describe('queryMock', () => {
         persist: false
       });
 
-      const firstRes = await fetchQuery(
-        {
-          text: 'query TestQuery { id }'
-        },
-        firstVariables
-      );
+      const firstRes = await axiosQuery.post(GRAPHQL_API_URL, {
+        query: 'query TestQuery { id }',
+        variables: firstVariables
+      });
 
-      const secondRes = await fetchQuery(
-        {
-          text: 'query TestQuery { id }'
-        },
-        secondVariables
-      );
+      const secondRes = await axiosQuery.post(GRAPHQL_API_URL, {
+        query: 'query TestQuery { id }',
+        variables: secondVariables
+      });
 
-      expect(firstRes.data).toEqual(firstTestData);
-      expect(secondRes.data).toEqual(secondTestData);
+      expect(firstRes.data.data).toEqual(firstTestData);
+      expect(secondRes.data.data).toEqual(secondTestData);
     });
 
     it('should be able to mock queries in sequence with the same query id', async () => {
@@ -107,16 +102,16 @@ describe('queryMock', () => {
         persist: false
       });
 
-      const firstRes = await fetchQuery({
-        text: 'query TestQuery { id }'
+      const firstRes = await axiosQuery.post(GRAPHQL_API_URL, {
+        query: 'query TestQuery { id }'
       });
 
-      const secondRes = await fetchQuery({
-        text: 'query TestQuery { id }'
+      const secondRes = await axiosQuery.post(GRAPHQL_API_URL, {
+        query: 'query TestQuery { id }'
       });
 
-      expect(firstRes.data).toEqual(firstTestData);
-      expect(secondRes.data).toEqual(secondTestData);
+      expect(firstRes.data.data).toEqual(firstTestData);
+      expect(secondRes.data.data).toEqual(secondTestData);
     });
   });
 
@@ -133,11 +128,11 @@ describe('queryMock', () => {
         customHandler: mockCustomHandler
       });
 
-      const res = await fetchQuery({
-        text: 'query TestQuery { id }'
+      const res = await axiosQuery.post(GRAPHQL_API_URL, {
+        query: 'query TestQuery { id }'
       });
 
-      expect(res.data).toEqual({ id: '123' });
+      expect(res.data.data).toEqual({ id: '123' });
       expect(queryMock._calls.length).toBe(1);
 
       expect(mockCustomHandler).toHaveBeenCalledTimes(1);
@@ -155,11 +150,11 @@ describe('queryMock', () => {
         customHandler: async (req, config) => [200, { data: { id: '123' } }]
       });
 
-      const res = await fetchQuery({
-        text: 'query TestQuery { id }'
+      const res = await axiosQuery.post(GRAPHQL_API_URL, {
+        query: 'query TestQuery { id }'
       });
 
-      expect(res.data).toEqual({ id: '123' });
+      expect(res.data.data).toEqual({ id: '123' });
       expect(queryMock._calls.length).toBe(1);
     });
   });
@@ -176,11 +171,11 @@ describe('queryMock', () => {
           data: testData
         });
 
-        const res = await fetchQuery({
-          text: 'query TestQuery { id }'
+        const res = await axiosQuery.post(GRAPHQL_API_URL, {
+          query: 'query TestQuery { id }'
         });
 
-        expect(res.data).toEqual(testData);
+        expect(res.data.data).toEqual(testData);
         expect(queryMock._calls.length).toBe(1);
       });
 
@@ -188,9 +183,9 @@ describe('queryMock', () => {
         expect.assertions(2);
 
         try {
-          await fetchQuery({
-            name: 'TestQuery',
-            text: ''
+          const res = await axiosQuery.post(GRAPHQL_API_URL, {
+            name: 'TextQuery',
+            query: 'query TestQuery { id }'
           });
         } catch (e) {
           expect(e).toBeDefined();
@@ -222,14 +217,12 @@ describe('queryMock', () => {
           data: mockData
         });
 
-        const res = await fetchQuery(
-          {
-            text: 'query TestQuery { id }'
-          },
-          mockVariables
-        );
+        const res = await axiosQuery.post(GRAPHQL_API_URL, {
+          query: 'query TestQuery { id }',
+          variables: mockVariables
+        });
 
-        expect(res.data).toEqual(mockData);
+        expect(res.data.data).toEqual(mockData);
       });
 
       it('should match on the variables object no matter the order of the object properties', async () => {
@@ -251,11 +244,9 @@ describe('queryMock', () => {
           data: mockData
         });
 
-        const res = await fetchQuery(
-          {
-            text: 'query TestQuery { id }'
-          },
-          {
+        const res = await axiosQuery.post(GRAPHQL_API_URL, {
+          query: 'query TestQuery { id }',
+          variables: {
             secondParam: 'secondParam',
             firstParam: [
               {
@@ -268,9 +259,9 @@ describe('queryMock', () => {
               }
             ]
           }
-        );
+        });
 
-        expect(res.data).toEqual(mockData);
+        expect(res.data.data).toEqual(mockData);
       });
 
       it('should not match on the provided variables object if arrays are not ordered the same way', async () => {
@@ -285,14 +276,12 @@ describe('queryMock', () => {
         expect.assertions(1);
 
         try {
-          await fetchQuery(
-            {
-              text: 'query TestQuery { id }'
-            },
-            {
+          const res = await axiosQuery.post(GRAPHQL_API_URL, {
+            query: 'query TestQuery { id }',
+            variables: {
               param: [{ id: 2 }, { id: 1 }]
             }
-          );
+          });
         } catch (e) {
           expect(e).toBeDefined();
         }
@@ -309,17 +298,15 @@ describe('queryMock', () => {
           ignoreThesePropertiesInVariables: ['someUnstableProp']
         });
 
-        const res = await fetchQuery(
-          {
-            text: 'query TestQuery { id }'
-          },
-          {
+        const res = await axiosQuery.post(GRAPHQL_API_URL, {
+          query: 'query TestQuery { id }',
+          variables: {
             someProp: true,
             someUnstableProp: 234
           }
-        );
+        });
 
-        expect(res.data).toEqual(mockData);
+        expect(res.data.data).toEqual(mockData);
       });
 
       it('should throw if variables does not match', async () => {
@@ -332,8 +319,8 @@ describe('queryMock', () => {
         expect.assertions(1);
 
         try {
-          await fetchQuery({
-            text: 'query TestQuery { id }'
+          await axiosQuery.post(GRAPHQL_API_URL, {
+            query: 'query TestQuery { id }'
           });
         } catch (e) {
           expect(e).toBeDefined();
@@ -348,11 +335,11 @@ describe('queryMock', () => {
           matchOnVariables: false
         });
 
-        const res = await fetchQuery({
-          text: 'query TestQuery { id }'
+        const res = await axiosQuery.post(GRAPHQL_API_URL, {
+          query: 'query TestQuery { id }'
         });
 
-        expect(res.data).toEqual(mockData);
+        expect(res.data.data).toEqual(mockData);
       });
 
       test('empty object in mock should let sending no variables or empty object pass', async () => {
@@ -363,18 +350,16 @@ describe('queryMock', () => {
         });
 
         expect(
-          (await fetchQuery({
-            text: 'query TestQuery { id }'
-          })).data
+          (await axiosQuery.post(GRAPHQL_API_URL, {
+            query: 'query TestQuery { id }'
+          })).data.data
         ).toEqual(mockData);
 
         expect(
-          (await fetchQuery(
-            {
-              text: 'query TestQuery { id }'
-            },
-            {}
-          )).data
+          (await axiosQuery.post(GRAPHQL_API_URL, {
+            query: 'query TestQuery { id }',
+            variables: {}
+          })).data.data
         ).toEqual(mockData);
       });
     });
@@ -387,14 +372,12 @@ describe('queryMock', () => {
           data: mockData
         });
 
-        const res = await fetchQuery(
-          {
-            text: 'query TestQuery { id }'
-          },
-          mockVariables
-        );
+        const res = await axiosQuery.post(GRAPHQL_API_URL, {
+          query: 'query TestQuery { id }',
+          variables: mockVariables
+        });
 
-        expect(res.data).toEqual(mockData);
+        expect(res.data.data).toEqual(mockData);
       });
     });
   });
@@ -413,12 +396,14 @@ describe('queryMock', () => {
 
       let controlVariable = false;
 
-      const returnPromise = fetchQuery({
-        text: 'query ControlledQuery { id }'
-      }).then(res => {
-        controlVariable = true;
-        return res;
-      });
+      const returnPromise = axiosQuery
+        .post(GRAPHQL_API_URL, {
+          query: 'query ControlledQuery { id }'
+        })
+        .then(res => {
+          controlVariable = true;
+          return res.data;
+        });
 
       // Make sure we wait. The then-fn above should not run until we've explicitly resolved the query by invoking
       // the resolve function above.
@@ -448,11 +433,11 @@ describe('queryMock', () => {
         })
       });
 
-      const res = await fetchQuery({
-        text: 'query AlteredQuery { id }'
+      const res = await axiosQuery.post(GRAPHQL_API_URL, {
+        query: 'query AlteredQuery { id }'
       });
 
-      expect(res).toEqual({
+      expect(res.data).toEqual({
         someOtherPropOnResponse: true,
         data: {
           addedProp: true
@@ -474,8 +459,8 @@ describe('queryMock', () => {
       });
 
       try {
-        await fetchQuery({
-          text: 'query ErrorTestQuery { id }'
+        await axiosQuery.post(GRAPHQL_API_URL, {
+          query: 'query ErrorTestQuery { id }'
         });
       } catch (e) {
         expect(e).toBeDefined();
@@ -502,8 +487,8 @@ describe('queryMock', () => {
       });
 
       try {
-        await fetchQuery({
-          text: 'query ErrorTestQuery { id }'
+        await axiosQuery.post(GRAPHQL_API_URL, {
+          query: 'query ErrorTestQuery { id }'
         });
       } catch (e) {
         expect(e).toBeDefined();
@@ -522,8 +507,8 @@ describe('queryMock', () => {
       });
 
       try {
-        await fetchQuery({
-          text: 'query NoMockForThisOne { id }'
+        await axiosQuery.post(GRAPHQL_API_URL, {
+          query: 'query NoMockForThisOne { id }'
         });
       } catch (e) {
         expect(e[0].message).toMatchSnapshot();
@@ -543,15 +528,13 @@ describe('queryMock', () => {
       });
 
       try {
-        await fetchQuery(
-          {
-            text: 'query SomeQuery { id }'
-          },
-          {
+        await axiosQuery.post(GRAPHQL_API_URL, {
+          query: 'query SomeQuery { id }',
+          variables: {
             some: 'prop',
             name: false
           }
-        );
+        });
       } catch (e) {
         expect(e[0].message).toMatchSnapshot();
       }
@@ -571,15 +554,13 @@ describe('queryMock', () => {
       });
 
       try {
-        await fetchQuery(
-          {
-            text: 'query SomeQuery { id }'
-          },
-          {
+        await axiosQuery.post(GRAPHQL_API_URL, {
+          query: 'query SomeQuery { id }',
+          variables: {
             some: 'prop',
             name: true
           }
-        );
+        });
       } catch (e) {
         expect(e[0].message).toBe(
           'Variables do not match for operation "SomeQuery" due to custom "matchOnVariables" function'

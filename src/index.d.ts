@@ -12,6 +12,11 @@ declare module 'graphql-query-test-mock' {
     data: Data;
   };
 
+  type ServerErrorResponse = {
+    data?: Data;
+    errors: Array<Data>;
+  };
+
   type NockReturnVal = [number, ServerResponse];
 
   export type MockGraphQLConfig = {
