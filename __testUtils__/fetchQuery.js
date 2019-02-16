@@ -30,8 +30,6 @@ export function fetchQuery(
 
     const json = await response.json();
 
-    console.log('JSON:', json);
-
     if (json.errors) return reject(json.errors);
     return resolve(json);
   });
