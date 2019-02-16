@@ -1,5 +1,16 @@
 # graphql-query-test-mock
 
+Fork of https://github.com/zth/graphql-query-test-mock.
+
+Changes:
+
+- Support for axios requests (by fixing a bug where string data is not parsed into an object)
+- Support for multipart request (extracting the data using regexp).
+- Errors are returned the same way that graphql does it (`error` in the response data), the original module treat it as node erros thrown in the process that can't be handle by some http clients (axios). https://graphql.org/learn/serving-over-http/#response.
+- Updated tests using the described approach about errors.
+
+---
+
 A library to mock GraphQL queries when testing clients making calls to GraphQL-API:s. Ideal for use with something like Jest and Relay Modern/Apollo, but it's not bound to any specific client library.
 Focus is on _realistic testing_. We use `nock` to do an as realistic mock as possible - requests will actually be dispatched from your client code, but intercepted at the `http` level by `nock`, allowing
 for an as realistic testing environment as you can get without making requests to an actual server.

@@ -1,11 +1,11 @@
 {
-  "name": "graphql-query-test-mock",
+  "name": "@devniel/graphql-query-test-mock",
   "version": "0.11.0",
   "author": "Gabriel Nordeborn",
   "license": "MIT",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
-  "repository": "https://github.com/zth/graphql-query-test-mock",
+  "repository": "https://github.com/devniel/graphql-query-test-mock#da",
   "description": "Mock queries to your GraphQL backend in your Jest tests.",
   "keywords": [
     "graphql",
